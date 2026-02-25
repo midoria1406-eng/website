@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini Prompt Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e8e8e8;
+      --text: #1a1a1a;
+      --text-secondary: #6b6b6b;
+      --accent: #4285f4;
+      --accent-hover: #3367d6;
+      --tag-bg: #f0f0f0;
+      --copy-success: #34a853;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-hover: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+      --radius: 12px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #e8e8e8;
+      --text-secondary: #888888;
+      --accent: #6ea8fe;
+      --accent-hover: #5a9aff;
+      --tag-bg: #252525;
+      --shadow: 0 1px 3px rgba(0,0,0,0.2);
+      --shadow-hover: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #ffd6e7 0%, #bde0fe 100%) fixed;
+      color: var(--text);
+      line-height: 1.6;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      background: rgba(255,255,255,0.85);
+    }
+
+    [data-theme="dark"] .header {
+      background: rgba(15,15,15,0.85);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      white-space: nowrap;
+    }
+
+    .logo span {
+      background: linear-gradient(135deg, #f9a8d4, #c4b5fd, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #4285f4, #ea4335, #fbbc04, #34a853);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 360px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 16px 10px 40px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(66,133,244,0.15);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      width: 18px;
+      height: 18px;
+    }
+
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .theme-toggle:hover { border-color: var(--accent); }
+
+    /* Hero */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 24px 24px;
+      text-align: center;
+      background: rgba(0,0,0,0.45);
+      border-radius: 0 0 24px 24px;
+      backdrop-filter: blur(2px);
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffd1dc, #ffb7d5, #c8b6ff, #b8e0fe, #baffc9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      max-width: 500px;
+      margin: 0 auto;
+      background: linear-gradient(90deg, #ffd6e8, #e8d0ff, #bde0fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 1px 4px rgba(0,0,0,0.35));
+    }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 24px;
+      padding: 16px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ffd1dc, #c8b6ff, #b8e0fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 1px 4px rgba(0,0,0,0.35));
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #e0d4f0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    /* Filter Tabs */
+    .filters {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      padding: 8px 18px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* Grid */
+    .grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .card-category {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: linear-gradient(90deg, #f9a8d4, #c4b5fd, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.4;
+      background: linear-gradient(135deg, #e8a0bf, #b8a0d8, #a0c4e8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card-prompt {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      position: relative;
+      flex: 1;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      padding: 4px 10px;
+      background: var(--tag-bg);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .copy-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .copy-btn.copied {
+      border-color: var(--copy-success);
+      color: var(--copy-success);
+      background: rgba(52,168,83,0.05);
+    }
+
+    .copy-btn svg { width: 16px; height: 16px; }
+
+    .difficulty {
+      display: flex;
+      gap: 3px;
+    }
+
+    .difficulty-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .difficulty-dot.filled { background: var(--accent); }
+
+    /* Card Image */
+    .card-image {
+      width: calc(100% + 48px);
+      margin: -24px -24px 0;
+      border-radius: var(--radius) var(--radius) 0 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
+
+    .card-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    /* Modal Image */
+    .modal-image {
+      width: calc(100% + 64px);
+      margin: -32px -32px 20px;
+      border-radius: 16px 16px 0 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .modal-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
+
+    .modal-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    /* Empty State */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      opacity: 0.4;
+    }
+
+    /* Scroll to top */
+    .scroll-top {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(66,133,244,0.3);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      z-index: 50;
+    }
+
+    .scroll-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      transform: scale(0.95);
+      transition: transform 0.25s;
+    }
+
+    .modal-overlay.open .modal {
+      transform: scale(1);
+    }
+
+    .modal h2 { font-size: 1.3rem; margin-bottom: 8px; }
+
+    .modal .card-category { margin-bottom: 12px; display: inline-block; }
+
+    .modal .card-prompt {
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+
+    .modal-close {
+      float: right;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .modal-tips {
+      margin-top: 16px;
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 8px;
+    }
+
+    .modal-tips h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .modal-tips ul {
+      list-style: none;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .modal-tips li {
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .modal-tips li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* Visitor Counter */
+    .visitor-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .visitor-badge svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .visitor-badge .visitor-num {
+      font-weight: 700;
+      background: linear-gradient(90deg, #f9a8d4, #c4b5fd, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .visitor-badge .visitor-label {
+      color: var(--text-secondary);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text);
+      color: var(--bg);
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 300;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 1.6rem; }
+      .grid { grid-template-columns: 1fr; }
+      .header-inner { flex-wrap: wrap; }
+      .search-box { max-width: 100%; order: 3; width: 100%; }
+      .stats { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">✦</div>
+        <span>Gemini Prompt Gallery</span>
+      </div>
+      <div class="search-box">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="ค้นหา prompt...">
+      </div>
+      <div class="header-actions">
+        <div class="visitor-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+          </svg>
+          <span class="visitor-num" id="visitorCount">0</span>
+          <span class="visitor-label">visitors</span>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" id="themeIcon">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Gemini Image Prompt Collection</h1>
+    <p>แหล่งรวม prompt สร้างรูปสวยๆ ด้วย Gemini แค่ก๊อปไปวางก็ใช้ได้เลยจ้า!</p>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="totalCount">0</div>
+        <div class="stat-label">Prompts</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" id="categoryCount">0</div>
+        <div class="stat-label">Categories</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <div class="filters" id="filters"></div>
+
+  <!-- Grid -->
+  <div class="grid" id="grid"></div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal" id="modalContent"></div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">คัดลอกแล้ว!</div>
+
+  <!-- Scroll to top -->
+  <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
+
+  <script>
+    // =====================
+    // PROMPT DATA
+    // =====================
+    const prompts = [
+      {
+        id: 1,
+        category: "Baking",
+        title: "คัพเค้กครีม Pastel Kitchen",
+        prompt: `สร้างภาพหญิงสาว (อ้างอิงใบหน้าจากภาพต้นฉบับ 100% ห้ามเปลี่ยนแปลง) ผิวขาวเนียนละเอียดออร่า หน้าหวาน ภาพถ่ายสมจริงไม่ใช้การ์ตูน
+ทรงผม: มัดผมบันสูงยุ่งๆ (Messy Bun) ผูกด้วยริบบิ้นสีชมพูอ่อน
+การแต่งหน้า: งานผิวฉ่ำวาว ปัดแก้มอมชมพู คิ้วเรียงเส้นสวยได้รูป,ปากฉ่ำกลอส ,กรีดอายไลน์เนอร์คมสวย ขนตางอนยาว
+เครื่องประดับ: สร้อย/ต่างหูตัว K นาฬิกาทอง แหวนนิ้วนาง
+เล็บ: เล็บเจลสั้นสีชมพูพาสเทลผสมกลิตเตอร์
+สวมชุด: ชุดเดรสสีขาว สวมทับด้วยผ้ากันเปื้อนสีชมพูพาสเทลแต่งระบายลูกไม้ฟูฟ่องสไตล์เจ้าหญิง
+ท่าทาง: ยืนบีบครีมฟรอสติ้งลงบนคัพเค้กอย่างตั้งใจ หันมาส่งยิ้มหวานขยิบตาให้กล้อง
+ฉากหลัง: ครัวสไตล์วินเทจสีพาสเทลสว่างสดใส จัดเต็มด้วยเอฟเฟกต์หัวใจสีชมพูพาสเทลและสีฟ้าอ่อนลอยฟุ้งเต็มอากาศ พร้อมเอฟเฟกต์ประกายแสงวิบวับ (Sparkles) และละอองน้ำตาลไอซิ่งเรืองแสง
+ถ่ายด้วยกล้อง (Camera): Canon EOS R5, เลนส์ RF 85mm f/1.2L, ฟูลเฟรม (full-frame) • รูรับแสง (Aperture): f/1.4 • ความละเอียด (Resolution): 8K ความคมชัดระดับมืออาชีพ อัตราส่วนภาพ9:16`,
+        tags: ["messy bun", "pastel kitchen", "cupcake"],
+        difficulty: 2,
+        image: "prompts%20gallery/1.png",
+        tips: ["เปลี่ยนสีริบบิ้นและผ้ากันเปื้อนให้เข้ากับธีม", "เพิ่มรายละเอียดคัพเค้ก เช่น 'rainbow sprinkles' หรือ 'fondant flowers'", "ปรับสีเล็บและเครื่องประดับตามต้องการ"]
+      },
+      {
+        id: 2,
+        category: "Baking",
+        title: "คุกกี้ดาว Cottagecore Kitchen",
+        prompt: `สร้างภาพหญิงสาว (อ้างอิงใบหน้าจากภาพต้นฉบับ 100% ห้ามเปลี่ยนแปลง) ผิวขาวเนียนละเอียดออร่า หน้าหวาน ภาพถ่ายสมจริงไม่ใช้การ์ตูน
+ทรงผม: ถักเปียสองข้างหลวมๆ ดึงปอยผมให้ดูพองๆ ละมุนๆ
+การแต่งหน้า: งานผิวฉ่ำวาว ปัดแก้มอมชมพู คิ้วเรียงเส้นสวยได้รูป,ปากฉ่ำกลอส ,กรีดอายไลน์เนอร์คมสวย ขนตางอนยาว
+เครื่องประดับ: สร้อย/ต่างหูตัว K นาฬิกาทอง แหวนนิ้วนาง
+เล็บ: เล็บเจลสีเหลืองอ่อนละมุน
+สวมชุด: เดรสผ้าฝ้ายพิมพ์ลายดอกไม้เล็กๆ สีเหลืองอ่อน สไตล์คอทเทจคอร์ (Cottagecore)
+ท่าทาง: สวมถุงมือกันความร้อนสีครีม กำลังถือถาดอบคุกกี้รูปดาวที่เพิ่งออกจากเตาอบ ยิ้มร่าเริงภูมิใจผลงาน
+ฉากหลัง: ครัวไม้อบอุ่น แสงแดดส่องเป็นลำ จัดเต็มเอฟเฟกต์ดาวดวงเล็กๆ สีทองส่องประกายกะพริบวิบวับรอบๆ ถาดคุกกี้ และมีเอฟเฟกต์ละอองแป้งเรืองแสงสีทองลอยคลุ้ง
+ถ่ายด้วยกล้อง (Camera): Canon EOS R5, เลนส์ RF 85mm f/1.2L, ฟูลเฟรม (full-frame) • รูรับแสง (Aperture): f/1.4 • ความละเอียด (Resolution): 8K ความคมชัดระดับมืออาชีพ อัตราส่วนภาพ9:16`,
+        tags: ["twin braids", "cottagecore", "cookies"],
+        difficulty: 2,
+        image: "prompts%20gallery/2.png",
+        tips: ["เปลี่ยนรูปคุกกี้เป็น 'หัวใจ', 'ดอกไม้' หรือ 'ตัวอักษร'", "ปรับโทนสีชุดเป็น pastel สีอื่น เช่น mint หรือ lavender", "เพิ่ม 'oven gloves pattern' ให้เข้ากับชุด"]
+      },
+      {
+        id: 3,
+        category: "Baking",
+        title: "ฟองดูว์ช็อกโกแลต Vintage Kitchen",
+        prompt: `สร้างภาพหญิงสาว (อ้างอิงใบหน้าจากภาพต้นฉบับ 100% ห้ามเปลี่ยนแปลง) ผิวขาวเนียนละเอียดออร่า หน้าหวาน ภาพถ่ายสมจริงไม่ใช้การ์ตูน
+ทรงผม: มวยผมสูงสไตล์เกาหลี (Top Knot) ไม่ให้เกะกะ
+การแต่งหน้า: งานผิวฉ่ำวาว ปัดแก้มอมชมพู คิ้วเรียงเส้นสวยได้รูป,ปากฉ่ำกลอส ,กรีดอายไลน์เนอร์คมสวย ขนตางอนยาว
+เครื่องประดับ: สร้อย/ต่างหูตัว K นาฬิกาทอง แหวนนิ้วนาง
+เล็บ: เล็บเจลสีน้ำตาลช็อกโกแลต
+สวมชุด: เสื้อยืดสีขาว สวมทับด้วยผ้ากันเปื้อนลายจุดสีแดง-ขาว (Red polka dot) ดูวินเทจน่ารัก
+ท่าทาง: ใช้ส้อมจิ้มสตรอว์เบอร์รีลูกโตจุ่มลงในหม้อช็อกโกแลตฟองดูว์เยิ้มๆ ทำหน้าตาทะเล้นน่ารัก
+ฉากหลัง: ครัวสว่างสดใส จัดเต็มเอฟเฟกต์หัวใจสีแดงและสีชมพูเรืองแสงลอยปุดๆ ขึ้นมาเหมือนฟองสบู่รอบเตาฟองดูว์ และมีหยดช็อกโกแลตกราฟิกน่ารักๆ ประดับรอบเฟรม
+ถ่ายด้วยกล้อง (Camera): Canon EOS R5, เลนส์ RF 85mm f/1.2L, ฟูลเฟรม (full-frame) • รูรับแสง (Aperture): f/1.4 • ความละเอียด (Resolution): 8K ความคมชัดระดับมืออาชีพ อัตราส่วนภาพ9:16`,
+        tags: ["top knot", "vintage apron", "fondue"],
+        difficulty: 2,
+        image: "prompts%20gallery/3.png",
+        tips: ["เปลี่ยน 'สตรอว์เบอร์รี' เป็นผลไม้อื่น เช่น banana หรือ marshmallow", "เปลี่ยนลายผ้ากันเปื้อนเป็น 'gingham check' หรือ 'floral'", "ลอง 'white chocolate fondue' แทน dark chocolate"]
+      },
+      {
+        id: 4,
+        category: "Baking",
+        title: "สตรอว์เบอร์รีเค้ก Romantic Kitchen",
+        prompt: `สร้างภาพหญิงสาว (อ้างอิงใบหน้าจากภาพต้นฉบับ 100% ห้ามเปลี่ยนแปลง) ผิวขาวเนียนละเอียดออร่า หน้าหวาน ภาพถ่ายสมจริงไม่ใช้การ์ตูน
+ทรงผม: มัดผมหางม้าต่ำ ผูกด้วยโดนัทมัดผม (Scrunchie) สีม่วงลาเวนเดอร์
+การแต่งหน้า: งานผิวฉ่ำวาว ปัดแก้มอมชมพู คิ้วเรียงเส้นสวยได้รูป,ปากฉ่ำกลอส ,กรีดอายไลน์เนอร์คมสวย ขนตางอนยาว
+เครื่องประดับ: สร้อย/ต่างหูตัว K นาฬิกาทอง แหวนนิ้วนาง
+เล็บ: เล็บเจลสีม่วงลาเวนเดอร์ใสๆ
+สวมชุด: เสื้อไหมพรมบางๆ สีม่วงลาเวนเดอร์ คอเหลี่ยมกว้างดูน่ารักเซ็กซี่เบาๆ
+ท่าทาง: มือเรียวกำลังคีบสตรอว์เบอร์รีลูกโตวางประดับบนยอดเค้กครีมสดอย่างเบามือ สายตาอ่อนโยน
+ฉากหลัง: ครัวที่มีแสงไฟสลัวโรแมนติก จัดเต็มเอฟเฟกต์เกล็ดน้ำตาลเรืองแสงสีม่วงและชมพูร่วงหล่นลงมาเหมือนหิมะรอบๆ ตัวเค้ก พร้อมประกายแสงแฟรี่ (Fairy dust) ฟรุ้งฟริ้ง
+ถ่ายด้วยกล้อง (Camera): Canon EOS R5, เลนส์ RF 85mm f/1.2L, ฟูลเฟรม (full-frame) • รูรับแสง (Aperture): f/1.4 • ความละเอียด (Resolution): 8K ความคมชัดระดับมืออาชีพ อัตราส่วนภาพ9:16`,
+        tags: ["low ponytail", "lavender", "strawberry cake"],
+        difficulty: 2,
+        image: "prompts%20gallery/4.png",
+        tips: ["เปลี่ยนสี scrunchie และชุดให้ match กัน เช่น 'baby blue', 'mint green'", "เพิ่ม 'candles on the cake' สำหรับ birthday theme", "ปรับ fairy dust เป็นสีทองสำหรับ luxurious feel"]
+      }
+    ];
+
+    // =====================
+    // APP STATE
+    // =====================
+    let activeFilter = "all";
+    let searchQuery = "";
+
+    // =====================
+    // FUNCTIONS
+    // =====================
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => document.querySelectorAll(sel);
+
+    function getCategories() {
+      return [...new Set(prompts.map(p => p.category))];
+    }
+
+    function filterPrompts() {
+      return prompts.filter(p => {
+        const matchCategory = activeFilter === "all" || p.category === activeFilter;
+        const q = searchQuery.toLowerCase();
+        const matchSearch = !q ||
+          p.title.toLowerCase().includes(q) ||
+          p.prompt.toLowerCase().includes(q) ||
+          p.tags.some(t => t.toLowerCase().includes(q)) ||
+          p.category.toLowerCase().includes(q);
+        return matchCategory && matchSearch;
+      });
+    }
+
+    function renderFilters() {
+      const cats = getCategories();
+      const container = $("#filters");
+      container.innerHTML = `<button class="filter-btn ${activeFilter === 'all' ? 'active' : ''}" data-filter="all">All</button>` +
+        cats.map(c =>
+          `<button class="filter-btn ${activeFilter === c ? 'active' : ''}" data-filter="${c}">${c}</button>`
+        ).join("");
+
+      container.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeFilter = btn.dataset.filter;
+          renderFilters();
+          renderGrid();
+        });
+      });
+    }
+
+    function renderDifficulty(level) {
+      return `<div class="difficulty" title="Complexity: ${level}/3">` +
+        [1, 2, 3].map(i => `<div class="difficulty-dot ${i <= level ? 'filled' : ''}"></div>`).join("") +
+        `</div>`;
+    }
+
+    function renderGrid() {
+      const filtered = filterPrompts();
+      const grid = $("#grid");
+
+      $("#totalCount").textContent = filtered.length;
+      $("#categoryCount").textContent = getCategories().length;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+            </svg>
+            <p>ไม่พบ prompt ที่ตรงกัน</p>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map((p, i) => `
+        <div class="card" style="animation-delay: ${i * 0.05}s" data-id="${p.id}">
+          ${p.image ? '<div class="card-image"><img src="' + p.image + '" alt="' + p.title + '" loading="lazy"></div>' : ''}
+          <div class="card-header">
+            <div>
+              <div class="card-category">${p.category}</div>
+              <div class="card-title">${p.title}</div>
+            </div>
+            ${renderDifficulty(p.difficulty)}
+          </div>
+          <div class="card-prompt">${truncate(p.prompt, 160)}</div>
+          <div class="card-tags">
+            ${p.tags.map(t => `<span class="tag">#${t}</span>`).join("")}
+          </div>
+          <div class="card-footer">
+            <button class="copy-btn" data-prompt="${escapeAttr(p.prompt)}">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2"/>
+                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+              </svg>
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+      `).join("");
+
+      // Card click → open modal
+      grid.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("click", (e) => {
+          if (e.target.closest(".copy-btn")) return;
+          const id = parseInt(card.dataset.id);
+          openModal(id);
+        });
+      });
+
+      // Copy buttons
+      grid.querySelectorAll(".copy-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          copyPrompt(btn);
+        });
+      });
+    }
+
+    function truncate(str, len) {
+      return str.length > len ? str.slice(0, len) + "..." : str;
+    }
+
+    function escapeAttr(str) {
+      return str.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    function copyPrompt(btn) {
+      const text = btn.dataset.prompt || btn.closest('.modal')?.querySelector('.card-prompt')?.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add("copied");
+        btn.querySelector("span").textContent = "Copied!";
+        showToast("คัดลอก prompt แล้ว!");
+        setTimeout(() => {
+          btn.classList.remove("copied");
+          btn.querySelector("span").textContent = "Copy";
+        }, 2000);
+      });
+    }
+
+    function showToast(msg) {
+      const toast = $("#toast");
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2000);
+    }
+
+    function openModal(id) {
+      const p = prompts.find(x => x.id === id);
+      if (!p) return;
+
+      const modal = $("#modal");
+      const content = $("#modalContent");
+
+      content.innerHTML = `
+        ${p.image ? '<div class="modal-image"><img src="' + p.image + '" alt="' + p.title + '" loading="lazy"></div>' : ''}
+        <button class="modal-close" id="modalClose">✕</button>
+        <div class="card-category">${p.category}</div>
+        <h2>${p.title}</h2>
+        ${renderDifficulty(p.difficulty)}
+        <div class="card-prompt">${p.prompt}</div>
+        <div class="card-tags" style="margin-bottom: 8px;">
+          ${p.tags.map(t => `<span class="tag">#${t}</span>`).join("")}
+        </div>
+        <button class="copy-btn" data-prompt="${escapeAttr(p.prompt)}" style="width:100%; justify-content: center;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          <span>Copy Prompt</span>
+        </button>
+        ${p.tips ? `
+          <div class="modal-tips">
+            <h3>💡 เคล็ดลับ</h3>
+            <ul>${p.tips.map(t => `<li>${t}</li>`).join("")}</ul>
+          </div>
+        ` : ""}
+      `;
+
+      modal.classList.add("open");
+
+      content.querySelector("#modalClose").addEventListener("click", closeModal);
+      content.querySelector(".copy-btn").addEventListener("click", (e) => {
+        copyPrompt(e.currentTarget);
+      });
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+      });
+    }
+
+    function closeModal() {
+      $("#modal").classList.remove("open");
+    }
+
+    // =====================
+    // THEME
+    // =====================
+    function initTheme() {
+      const saved = localStorage.getItem("theme");
+      if (saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    }
+
+    $("#themeToggle").addEventListener("click", () => {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      document.documentElement.setAttribute("data-theme", isDark ? "light" : "dark");
+      localStorage.setItem("theme", isDark ? "light" : "dark");
+    });
+
+    // =====================
+    // SEARCH
+    // =====================
+    let searchTimeout;
+    $("#searchInput").addEventListener("input", (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        searchQuery = e.target.value;
+        renderGrid();
+      }, 200);
+    });
+
+    // =====================
+    // SCROLL TO TOP
+    // =====================
+    window.addEventListener("scroll", () => {
+      $("#scrollTop").classList.toggle("visible", window.scrollY > 400);
+    });
+
+    $("#scrollTop").addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    // =====================
+    // KEYBOARD
+    // =====================
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+      if (e.key === "/" && !e.ctrlKey && document.activeElement.tagName !== "INPUT") {
+        e.preventDefault();
+        $("#searchInput").focus();
+      }
+    });
+
+    // =====================
+    // IMAGE PROTECTION
+    // =====================
+    document.addEventListener('contextmenu', (e) => {
+      if (e.target.closest('.card-image') || e.target.closest('.modal-image') || e.target.tagName === 'IMG') {
+        e.preventDefault();
+      }
+    });
+
+    document.addEventListener('dragstart', (e) => {
+      if (e.target.tagName === 'IMG') {
+        e.preventDefault();
+      }
+    });
+
+    // Block long press on mobile
+    let longPressTimer;
+    document.addEventListener('touchstart', (e) => {
+      if (e.target.closest('.card-image') || e.target.closest('.modal-image')) {
+        longPressTimer = setTimeout(() => {
+          e.preventDefault();
+        }, 300);
+      }
+    }, { passive: false });
+
+    document.addEventListener('touchend', () => {
+      clearTimeout(longPressTimer);
+    });
+
+    document.addEventListener('touchmove', () => {
+      clearTimeout(longPressTimer);
+    });
+
+    // =====================
+    // VISITOR COUNTER (Abacus API)
+    // =====================
+    function animateCount(el, target) {
+      let current = 0;
+      const step = Math.max(1, Math.floor(target / 30));
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current.toLocaleString();
+        if (current >= target) clearInterval(timer);
+      }, 20);
+    }
+
+    function initVisitorCounter() {
+      const el = $('#visitorCount');
+      fetch('https://abacus.jasoncameron.dev/hit/gemini-prompt-gallery/visits')
+        .then(res => res.json())
+        .then(data => {
+          animateCount(el, data.value);
+        })
+        .catch(() => {
+          el.textContent = '-';
+        });
+    }
+
+    // =====================
+    // INIT
+    // =====================
+    initTheme();
+    initVisitorCounter();
+    renderFilters();
+    renderGrid();
+  </script>
+</body>
+</html>
